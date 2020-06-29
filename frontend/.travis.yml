@@ -1,0 +1,12 @@
+language: generic 
+
+sudo: required 
+services:
+  - docker
+
+before_install:
+  - cd frontend
+  - docker build -t valentynshcherban/udemy-docker -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true valentynshcherban/udemy-docker npm run test
