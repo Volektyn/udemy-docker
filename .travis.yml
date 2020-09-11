@@ -6,7 +6,7 @@ services:
 
 before_install:
   - cd frontend
-  - docker build -t valentynshcherban/udemy-docker -f Dockerfile.dev .
+  - docker build -t valentynshcherban/udemy-docker -f Dockerfile.prod .
 
 script:
   - docker run -e CI=true valentynshcherban/udemy-docker npm run test
