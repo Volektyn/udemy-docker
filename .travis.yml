@@ -18,6 +18,7 @@ deploy:
   env: "DockerReact-env"
   bucket_name: "elasticbeanstalk-us-east-2-452709507547"
   bucket_path: "docker-react"
+  skip_cleanup: true
   on:
     branch: master
   access-key-id: $ELASTIC_BEANSTALK_ACCESS_KEY_ID
