@@ -20,5 +20,5 @@ deploy:
   bucket_path: "docker-react"
   on:
     branch: master
-  access-key-id: $AWS_ACCESS_KEY
+  access-key-id: $ELASTIC_BEANSTALK_ACCESS_KEY_ID
   secret-access-key: $AWS_SECRET_KEY
