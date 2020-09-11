@@ -5,6 +5,7 @@ services:
   - docker
 
 before_install:
+  - echo $AWS_SECRET_KEY
   - cd frontend
   - docker build -t valentynshcherban/udemy-docker -f Dockerfile.dev .
 
