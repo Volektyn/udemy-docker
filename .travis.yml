@@ -23,4 +23,4 @@ deploy:
     branch: master
   access-key-id: $AWS_ACCESS_KEY
   secret-access-key: $AWS_SECRET_KEY
-  cache_control: no-cache
+  edge: true 
