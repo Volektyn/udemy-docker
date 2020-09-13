@@ -1,0 +1,27 @@
+language: generic 
+
+sudo: required 
+services:
+  - docker
+
+before_install:
+  - cd frontend
+  - docker build -t valentynshcherban/udemy-docker -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true valentynshcherban/udemy-docker npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-east-2-452709507547"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"
+    # secure: 
+  secret_access_key: "$AWS_SECRET_KEY" 
+    # secure: 
+  edge: true 
