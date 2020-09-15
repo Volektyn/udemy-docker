@@ -2,12 +2,10 @@ version: '3'
 services:
   postgres:
     image: 'postgres:latest'
-    # restart: always
     environment:
       POSTGRES_PASSWORD: postgres_password
   redis: 
     image: 'redis:latest'
-    # restart: always
   nginx: 
     restart: always
     build:
