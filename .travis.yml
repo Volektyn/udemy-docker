@@ -1,39 +1,28 @@
-language: generic 
-
-sudo: required 
+sudo: required
 services:
   - docker
-
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
-  - cd complex
+  - cd complex-gcp
+  - openssl aes-256-cbc -K $encrypted_f01475dab3c7_key -iv $encrypted_f01475dab3c7_iv -in multi-k8s-service-acc.json.enc -out multi-k8s-service-acc.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project multi-k8s-291320
+  - gcloud config set compute/zone us-central1-c
+  - gcloud container clusters get-credentials k8s-multicluster 
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker build -t valentynshcherban/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true valentynshcherban/react-test npm test
 
-after_success:
-  - docker build -t valentynshcherban/multi-client ./client
-  - docker build -t valentynshcherban/multi-nginx ./nginx
-  - docker build -t valentynshcherban/multi-server ./server
-  - docker build -t valentynshcherban/multi-worker ./worker
-  # Log in to the dockerhub
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # Take those images and push to dockerhub
-  - docker push valentynshcherban/multi-client
-  - docker push valentynshcherban/multi-nginx
-  - docker push valentynshcherban/multi-server
-  - docker push valentynshcherban/multi-worker
-
 deploy:
-  edge: true
-  provider: elasticbeanstalk
-  region: us-east-2
-  app: multi-docker
-  env: MultiDocker-env-1
-  bucket_name: "elasticbeanstalk-us-east-2-452709507547"
-  bucket_path: "docker-multi"
+  provider: script
+  script: bash ./deploy.sh
   on:
     branch: master
-  access_key_id: "$AWS_ACCESS_KEY"
-  secret_access_key: "$AWS_SECRET_KEY" 
-    # secure: "$AWS_SECRET_KEY" 
